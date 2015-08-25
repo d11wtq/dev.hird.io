@@ -1,0 +1,22 @@
+description: Development Environment
+
+depends: [hird-vpc]
+
+instances:
+  provision:
+    user: ubuntu
+    script: |
+      sudo apt-get update
+      sudo apt-get install -y tmux vim git-core make
+
+      git config --global alias.st 'status'
+      git config --global push.default 'simple'
+      git config --global credential.helper 'cache --timeout 3600'
+      git config --global user.name 'd11wtq'
+      git config --global user.email 'chris@w3style.co.uk'
+
+      git clone https://github.com/d11wtq/dot-vim.git ~/.vim
+      vim -u ~/.vim/setup
+  subnet: public
+  ports: [-1]
+  ssh: {key: development.pem}
