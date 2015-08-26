@@ -3,6 +3,9 @@ description: Development Environment
 depends: [hird-vpc]
 
 instances:
+  subnet: public
+  ports: [-1]
+  ssh: {key: development.pem}
   provision:
     user: ubuntu
     script: |
@@ -15,8 +18,23 @@ instances:
       git config --global user.name 'd11wtq'
       git config --global user.email 'chris@w3style.co.uk'
 
+      mkdir -p ~/.bashrc.d
+
+      cat > ~/.bashrc <<'EOF'
+      export EDITOR=vim
+      export LC_ALL=en_US.UTF-8
+      export LANG=$LC_ALL
+
+      for f in $(ls ~/.bashrc.d)
+      do
+        source ~/.bashrc.d/$f
+      done
+      EOF
+
+      GIT_REPOSITORY=https://raw.githubusercontent.com/git/git/master
+      GIT_COMPLETION=contrib/completion/git-completion.bash
+
+      curl -sLo ~/.bashrc.d/git-completion.bash $GIT_REPOSITORY/$GIT_COMPLETION
+
       git clone https://github.com/d11wtq/dot-vim.git ~/.vim
       vim -u ~/.vim/setup
-  subnet: public
-  ports: [-1]
-  ssh: {key: development.pem}
